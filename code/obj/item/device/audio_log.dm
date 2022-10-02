@@ -68,6 +68,56 @@
 
 			return round((messages.len /  max_lines) * 100)
 
+#define AUDIOLOG_MODE_RECORDING 0
+#define AUDIOLOG_MODE_PLAYING 1
+
+/obj/item/device/audio_log_tgui
+	name = "audio log tgui"
+	desc = "A fairly spartan recording device."
+	icon_state = "recorder"
+	uses_multiple_icon_states = 1
+	item_state = "electronic"
+	w_class = W_CLASS_SMALL
+	flags = TGUI_INTERACTIVE
+	
+	var/obj/item/audio_tape/tape = null
+	var/isrunning = FALSE
+	var/usemode = AUDIOLOG_MODE_RECORDING
+
+	attack_self(mob/user as mob)
+		..()
+		if (user.stat || user.restrained() || user.lying)
+			return
+		ui_interact(user)
+
+	ui_interact(mob/user, datum/tgui/ui)
+		ui = tgui_process.try_update_ui(user, src, ui)
+		if(!ui)
+			ui = new(user, src, "AudioLog", name)
+			ui.open()
+
+	ui_data(mob/user)
+		. = list(
+			"isrunning" = isrunning,
+			"usemode" = usemode
+		)
+
+	ui_act(action, params)
+		. = ..()
+		if (.)
+			return
+		if(action == "toggle_running")
+			isrunning = ~isrunning
+		else if(action == "toggle_mode")
+			if (usemode == AUDIOLOG_MODE_RECORDING)
+				usemode = AUDIOLOG_MODE_PLAYING
+			else
+				usemode = AUDIOLOG_MODE_RECORDING
+		. = TRUE
+		update_icon()
+
+#undef AUDIOLOG_MODE_RECORDING
+#undef AUDIOLOG_MODE_PLAYING
 
 /obj/item/device/audio_log
 	name = "audio log"
