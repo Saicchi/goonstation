@@ -6,7 +6,6 @@
  */
 
 import { useBackend } from '../backend';
-import { classes } from 'common/react';
 import { Button, Box, Flex, Section } from '../components';
 import { Window } from '../layouts';
 
@@ -17,13 +16,10 @@ export const PlayButton = (props) => {
     } = props;
 
     return (
-        <Flex
-            direction="column" align="center" backgroundColor="blue">
-            <Box as="span" class="AudioLog__MainToggle">Test</Box>
-            <Button
-                content={isrunning ? "On" : "Off"}
-                color={isrunning ? "good" : "bad"}w
-                onClick={() => { act("toggle_running") }} />
+        <Flex direction="column" align="center" backgroundColor="blue">
+            <Button content="Stop" color="bad"
+                disabled={!isrunning}
+                onClick={() => { act("stop_device") }} />
         </Flex>
     )
 };

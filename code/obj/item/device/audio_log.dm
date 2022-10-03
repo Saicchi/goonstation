@@ -106,15 +106,16 @@
 		. = ..()
 		if (.)
 			return
-		if(action == "toggle_running")
-			isrunning = ~isrunning
-		else if(action == "toggle_mode")
-			if (usemode == AUDIOLOG_MODE_RECORDING)
-				usemode = AUDIOLOG_MODE_PLAYING
-			else
-				usemode = AUDIOLOG_MODE_RECORDING
+		switch(action)
+			if("stop_device")
+				isrunning = FALSE
+			if("toggle_mode")
+				if (usemode == AUDIOLOG_MODE_RECORDING)
+					usemode = AUDIOLOG_MODE_PLAYING
+				else
+					usemode = AUDIOLOG_MODE_RECORDING
+				isrunning = TRUE
 		. = TRUE
-		update_icon()
 
 #undef AUDIOLOG_MODE_RECORDING
 #undef AUDIOLOG_MODE_PLAYING
