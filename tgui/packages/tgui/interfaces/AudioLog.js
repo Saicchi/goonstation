@@ -6,8 +6,42 @@
  */
 
 import { useBackend } from '../backend';
-import { Button, LabeledList, Section } from '../components';
+import { classes } from 'common/react';
+import { Button, Box, Flex, Section } from '../components';
 import { Window } from '../layouts';
+
+export const PlayButton = (props) => {
+    const {
+        act,
+        isrunning
+    } = props;
+
+    return (
+        <Flex
+            direction="column" align="center" backgroundColor="blue">
+            <Box as="span" class="AudioLog__MainToggle">Test</Box>
+            <Button
+                content={isrunning ? "On" : "Off"}
+                color={isrunning ? "good" : "bad"}w
+                onClick={() => { act("toggle_running") }} />
+        </Flex>
+    )
+};
+
+export const RecordButton = (props) => {
+    const {
+        act,
+        usemode
+    } = props;
+
+    return (
+        <Button
+            content={usemode ? "Playing" : "Recording"}
+            color={usemode ? "good" : "average"}
+            onClick={() => { act("toggle_mode") }} />
+    )
+};
+
 
 export const AudioLog = (props, context) => {
     const { act, data } = useBackend(context);
@@ -21,20 +55,8 @@ export const AudioLog = (props, context) => {
         <Window>
             <Window.Content>
                 <Section title="Stats">
-                    <LabeledList>
-                        <LabeledList.Item label="Running">
-                            <Button
-                                content={isrunning ? "On" : "Off"}
-                                color={isrunning ? "good" : "bad"}
-                                onClick={() => { act("toggle_running") }} />
-                        </LabeledList.Item>
-                        <LabeledList.Item label="UseMode">
-                            <Button
-                                content={usemode ? "Playing" : "Recording"}
-                                color={usemode ? "good" : "average"}
-                                onClick={() => { act("toggle_mode") }} />
-                        </LabeledList.Item>
-                    </LabeledList>
+                    <PlayButton act={act} isrunning={isrunning} />
+                    <RecordButton act={act} usemode={usemode} />
                 </Section>
             </Window.Content>
         </Window>
