@@ -5,10 +5,34 @@
  * @license ISC
  */
 
+@use '../colors.scss';
+
 .AudioLog {
-    
-    &__MainToggle {
-        color: red !important;
-        background-color: pink;
+
+    $border_radius: 5px;
+    $padding: 5px;
+
+    &__ButtonGreenOn {
+        border-radius: $border_radius;
+        padding: $padding;
+        background-color: colors.$good;
+    }
+
+    &__ButtonGreenOff {
+        border-radius: $border_radius;
+        padding: $padding;
+        background-color: scale-color(colors.$good, $lightness: -60%);
+    }
+
+    &__ButtonRedOn {
+        border-radius: $border_radius;
+        padding: $padding;
+        background-color: colors.$bad;
+    }
+
+    &__ButtonRedOff {
+        border-radius: $border_radius;
+        padding: $padding;
+        background-color: scale-color(colors.$bad, $lightness: -60%);
     }
 }

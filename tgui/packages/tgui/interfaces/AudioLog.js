@@ -16,25 +16,34 @@ export const PlayButton = (props) => {
     } = props;
 
     return (
-        <Flex direction="column" align="center" backgroundColor="blue">
-            <Button content="Stop" color="bad"
-                disabled={!isrunning}
-                onClick={() => { act("stop_device") }} />
-        </Flex>
+        <Button ml="15%"
+            content="Stop" color="bad"
+            disabled={!isrunning}
+            onClick={() => { act("stop_device") }} />
     )
 };
 
-export const RecordButton = (props) => {
+export const ModeButton = (props) => {
     const {
         act,
+        isrunning,
         usemode
     } = props;
 
+    const recording = isrunning && usemode == 0;
+    const playing = isrunning && !recording;
+
     return (
-        <Button
-            content={usemode ? "Playing" : "Recording"}
-            color={usemode ? "good" : "average"}
-            onClick={() => { act("toggle_mode") }} />
+        <Flex mr="15%" >
+            <Button
+                content="AY"
+                class={recording ? "AudioLog__ButtonGreenOn" : "AudioLog__ButtonGreenOff"}
+                onClick={() => { act("toggle_mode") }} />
+            <Button
+                content="RECORD"
+                class={playing ? "AudioLog__ButtonRedOn" : "AudioLog__ButtonRedOff"}
+                onClick={() => { act("toggle_mode") }} />
+        </Flex>
     )
 };
 
@@ -50,9 +59,11 @@ export const AudioLog = (props, context) => {
     return (
         <Window>
             <Window.Content>
-                <Section title="Stats">
-                    <PlayButton act={act} isrunning={isrunning} />
-                    <RecordButton act={act} usemode={usemode} />
+                <Section title="Control">
+                    <Flex align="center" justify="space-between">
+                        <PlayButton act={act} isrunning={isrunning} />
+                        <ModeButton act={act} isrunning={isrunning} usemode={usemode} />
+                    </Flex>
                 </Section>
             </Window.Content>
         </Window>
