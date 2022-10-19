@@ -33,6 +33,44 @@
 		display_active.icon_state = "energyShieldOn"
 		src.power_usage = 5
 
+	ui_static_data(mob/user)
+		. = ..()
+		. += list(
+			"power_min" = src.min_power,
+			"power_max" = src.max_power,
+			"power_description" = list("Blocks gases", "Blocks liquids and gases", "Blocks everything")
+		)
+
+	ui_data(mob/user)
+		. = ..()
+		. += list(
+			"power_current" = src.power_level
+		)
+
+	ui_act(action, params, datum/tgui/ui)
+		. = ..()
+		if (.)
+			return
+		switch(action)
+			if("toggle")
+				attack_hand(ui.user)
+				. = TRUE
+			if("anchor")
+				if (!ui.user.equipped() || !iswrenchingtool(ui.user.equipped()))
+					boutput(ui.user,"You need a wrench for that!")
+					return
+				else
+					attackby(ui.user.equipped(), ui.user)
+					. = TRUE
+			if("range")
+				var/selected_range = clamp(params["range"], src.min_range, src.max_range)
+				range = selected_range
+				. = TRUE
+			if("power")
+				var/selected_power = clamp(params["power"], src.min_power, src.max_power)
+				power_level = selected_power
+				. = TRUE
+
 	get_desc(dist, mob/user)
 		..()
 		var/charge_percentage = 0
@@ -57,6 +95,8 @@
 
 
 	pulse(var/mob/user)
+		ui_interact(user)
+		return
 		if(active)
 			boutput(user, "<span class='alert'>You can't change the power level or range while the generator is active.</span>")
 			return

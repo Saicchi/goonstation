@@ -9,6 +9,7 @@
 	anchored = 0
 	layer = FLOOR_EQUIP_LAYER1
 	deconstruct_flags = DECON_DESTRUCT
+	flags = TGUI_INTERACTIVE
 	var/obj/item/cell/PCEL = null
 	var/starts_with_cell = TRUE
 	var/coveropen = 0
@@ -41,6 +42,33 @@
 		src.display_battery = image('icons/obj/meteor_shield.dmi', "")
 		src.display_panel = image('icons/obj/meteor_shield.dmi', "")
 		..()
+
+	ui_interact(mob/user, datum/tgui/ui)
+		ui = tgui_process.try_update_ui(user, src, ui)
+		if(!ui)
+			ui = new(user, src, "ShieldGenerator")
+			ui.open()
+
+	ui_static_data(mob/user)
+		. = list(
+			"name" = src.name,
+			"range_min" = src.min_range,
+			"range_max" = src.max_range
+		)
+
+	ui_data(mob/user)
+		. = list(
+			"active" = src.active,
+			"anchored" = src.connected,
+			"charge_current" = round((src.PCEL.charge/src.PCEL.maxcharge)*100),
+			"power_draw" = get_draw(),
+			"range_current" = src.range
+		)
+
+	ui_act(action, params)
+		. = ..()
+		if (.)
+			return
 
 	disposing()
 		shield_off(1)
