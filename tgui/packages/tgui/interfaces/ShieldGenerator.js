@@ -98,6 +98,17 @@ export const ShieldGenerator = (props, context) => {
   const { anchored, charge_current, power_draw } = data;
   const { range_min, range_current, range_max } = data;
   const { power_min, power_current, power_max, power_name } = data;
+  const has_power = power_min && power_current && power_max && power_name;
+
+  const power_component = () => (
+    <Section title="Blocking power">
+      <ShieldPower
+        min_power={power_min}
+        current_power={power_current}
+        max_power={power_max}
+        power_name={power_name} />
+    </Section>
+  );
 
   return (
     <Window
@@ -118,13 +129,7 @@ export const ShieldGenerator = (props, context) => {
             max_range={range_max}
           />
         </Section>
-        <Section title="Blocking power">
-          <ShieldPower
-            min_power={power_min}
-            current_power={power_current}
-            max_power={power_max}
-            power_name={power_name} />
-        </Section>
+        { has_power && power_component() }
       </Window.Content>
     </Window>
   );

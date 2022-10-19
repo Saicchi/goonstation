@@ -7,6 +7,37 @@
 	nocell
 		starts_with_cell = FALSE
 
+	ui_act(action, params, datum/tgui/ui)
+		. = ..()
+		if (.)
+			return
+
+		if(action == "toggle")
+			attack_hand(ui.user)
+			. = TRUE
+			return
+
+		if(isAI(ui.user))
+			return
+		if(BOUNDS_DIST(ui.user, src) > 0)
+			boutput(ui.user, "<span class='alert'>You flail your arms at [src] from across the room like a complete muppet. Move closer, genius!</span>")
+			return
+		if(src.active)
+			boutput(ui.user, "<span class='alert'>You don't think you should mess around with the [src.name] while it's active.</span>")
+			return
+
+		switch(action)
+			if("anchor")
+				if (!ui.user.equipped() || !iswrenchingtool(ui.user.equipped()))
+					boutput(ui.user,"<span class='alert'>You need a wrench for that!</span>")
+					return
+				attackby(ui.user.equipped(), ui.user)
+				. = TRUE
+			if("range")
+				var/selected_range = clamp(params["range"], src.min_range, src.max_range)
+				src.range = selected_range
+				. = TRUE
+
 	shield_on()
 		if (!PCEL)
 			if (!powered()) //if NOT connected to power grid and there is power

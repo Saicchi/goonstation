@@ -51,33 +51,35 @@
 		. = ..()
 		if (.)
 			return
+
+		if(action == "toggle")
+			attack_hand(ui.user)
+			. = TRUE
+			return
+
+		if(isAI(ui.user))
+			return
+		if(BOUNDS_DIST(ui.user, src) > 0)
+			boutput(ui.user, "<span class='alert'>You flail your arms at [src] from across the room like a complete muppet. Move closer, genius!</span>")
+			return
+		if(src.active)
+			boutput(ui.user, "<span class='alert'>You don't think you should mess around with the [src.name] while it's active.</span>")
+			return
+
 		switch(action)
-			if("toggle")
-				attack_hand(ui.user)
-				. = TRUE
 			if("anchor")
 				if (!ui.user.equipped() || !iswrenchingtool(ui.user.equipped()))
 					boutput(ui.user,"<span class='alert'>You need a wrench for that!</span>")
 					return
-				else if(src.active)
-					boutput(ui.user, "<span class='alert'>You don't think you should mess around with the [src.name] while it's active.</span>")
-					return
-				else
-					attackby(ui.user.equipped(), ui.user)
-					. = TRUE
+				attackby(ui.user.equipped(), ui.user)
+				. = TRUE
 			if("range")
-				if(src.active)
-					boutput(ui.user, "<span class='alert'>You can't change the range while the generator is active.</span>")
-					return
 				var/selected_range = clamp(params["range"], src.min_range, src.max_range)
-				range = selected_range
+				src.range = selected_range
 				. = TRUE
 			if("power")
-				if(src.active)
-					boutput(ui.user, "<span class='alert'>You can't change the power level while the generator is active.</span>")
-					return
 				var/selected_power = clamp(params["power"], src.min_power, src.max_power)
-				power_level = selected_power
+				src.power_level = selected_power
 				. = TRUE
 
 	get_desc(dist, mob/user)
@@ -102,35 +104,6 @@
 				generate_shield()
 				src.power_usage = get_draw()
 
-
-	pulse(var/mob/user)
-		ui_interact(user)
-		return
-		if(active)
-			boutput(user, "<span class='alert'>You can't change the power level or range while the generator is active.</span>")
-			return
-		var/list/choices = list("Set Range")
-		if(max_power != min_power)
-			choices += "Set Power Level"
-		var/input
-		if(length(choices) == 1)
-			input = choices[1]
-		else
-			input = input("Select a config to modify!", "Config", null) as null|anything in choices
-		if(input && (user in range(1,src)))
-			switch(input)
-				if("Set Range")
-					src.set_range(user)
-				if("Set Power Level")
-					var/the_level = input("Enter a power level from [src.min_power]-[src.max_power]. Higher levels use more power.","[src.name]",1) as null|num
-					if(!the_level)
-						return
-					if(BOUNDS_DIST(user, src) > 0)
-						boutput(user, "<span class='alert'>You flail your arms at [src] from across the room like a complete muppet. Move closer, genius!</span>")
-						return
-					the_level = clamp(the_level, min_power, max_power)
-					src.power_level = the_level
-					boutput(user, "<span class='notice'>You set the power level to [src.power_level].</span>")
 
 	//Code for placing the shields and adding them to the generator's shield list
 	proc/generate_shield()

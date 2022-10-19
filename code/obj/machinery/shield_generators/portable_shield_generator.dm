@@ -214,7 +214,7 @@
 		boutput(user, "<span class='notice'>[outcome_text]</span>")
 
 	proc/pulse(var/mob/user)
-		set_range(user)
+		ui_interact(user)
 
 	get_desc(dist, mob/user)
 		. = ..()
