@@ -38,7 +38,7 @@
 		. += list(
 			"power_min" = src.min_power,
 			"power_max" = src.max_power,
-			"power_description" = list("Blocks gases", "Blocks liquids and gases", "Blocks everything")
+			"power_name" = list("Gases", "Gases and Fluids", "Everything")
 		)
 
 	ui_data(mob/user)
@@ -57,16 +57,25 @@
 				. = TRUE
 			if("anchor")
 				if (!ui.user.equipped() || !iswrenchingtool(ui.user.equipped()))
-					boutput(ui.user,"You need a wrench for that!")
+					boutput(ui.user,"<span class='alert'>You need a wrench for that!</span>")
+					return
+				else if(src.active)
+					boutput(ui.user, "<span class='alert'>You don't think you should mess around with the [src.name] while it's active.</span>")
 					return
 				else
 					attackby(ui.user.equipped(), ui.user)
 					. = TRUE
 			if("range")
+				if(src.active)
+					boutput(ui.user, "<span class='alert'>You can't change the range while the generator is active.</span>")
+					return
 				var/selected_range = clamp(params["range"], src.min_range, src.max_range)
 				range = selected_range
 				. = TRUE
 			if("power")
+				if(src.active)
+					boutput(ui.user, "<span class='alert'>You can't change the power level while the generator is active.</span>")
+					return
 				var/selected_power = clamp(params["power"], src.min_power, src.max_power)
 				power_level = selected_power
 				. = TRUE

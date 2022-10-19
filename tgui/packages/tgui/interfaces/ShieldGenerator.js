@@ -72,20 +72,18 @@ export const ShieldRange = (props, context) => {
 export const ShieldPower = (props, context) => {
   const { act } = useBackend(context);
 
-  const { min_power, current_power, max_power, tooltips } = props;
+  const { min_power, current_power, max_power, power_name } = props;
   const powers = Array(max_power).fill().map((element, index) => index + 1);
 
   return (
-    <Stack fontSize={1.65}>
+    <Stack fontSize={1.2}>
       {powers.map((number) => (
         <Stack.Item nowrap key={number}>
           <Button
             color={current_power === number ? "green" : "blue"}
             disabled={number < min_power}
-            tooltip={number <= tooltips.length ? tooltips[number - 1] : ""}
-            tooltipPosition="top"
             onClick={() => { act("power", { power: number }); }}>
-            {number}
+            {number <= power_name.length ? power_name[number - 1] : "ErrorOutOfRange"}
           </Button>
         </Stack.Item>
       ))}
@@ -99,13 +97,13 @@ export const ShieldGenerator = (props, context) => {
   const { name } = data;
   const { anchored, charge_current, power_draw } = data;
   const { range_min, range_current, range_max } = data;
-  const { power_min, power_current, power_max, power_description } = data;
+  const { power_min, power_current, power_max, power_name } = data;
 
   return (
     <Window
       title={name}
       width={500}
-      height={400}>
+      height={350}>
       <Window.Content>
         <Section title="Status">
           <ShieldStatus
@@ -120,12 +118,12 @@ export const ShieldGenerator = (props, context) => {
             max_range={range_max}
           />
         </Section>
-        <Section title="Power">
+        <Section title="Blocking power">
           <ShieldPower
             min_power={power_min}
             current_power={power_current}
             max_power={power_max}
-            tooltips={power_description} />
+            power_name={power_name} />
         </Section>
       </Window.Content>
     </Window>
